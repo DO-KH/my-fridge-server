@@ -1,0 +1,33 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Item {
+  id           Int      @id @default(autoincrement())
+  username     String
+  name         String
+  quantity     Int
+  expiryDate   String?  // 유통기한이 없는 경우를 위해 `?`
+  receivingDate String
+  category     String
+  createdAt    DateTime @default(now())
+}
+
+model User {
+  id        Int      @id @default(autoincrement()) // 기본 키 (자동 증가)
+  name      String   // 사용자 이름
+  email     String   @unique // 이메일 (중복 불가)
+  password  String   // 비밀번호 (암호화 필요)
+  createdAt DateTime @default(now()) // 가입 날짜
+}

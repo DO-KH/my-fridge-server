@@ -2,16 +2,16 @@ import express from "express";
 import session from "express-session";
 import cors from "cors";
 import dotenv from "dotenv";
-import itemRoutes from "./routes/itemRoutes";
-import authRoutes from "./routes/authRoutes";
+import itemRoutes from "./src/routes/itemRoutes";
+import authRoutes from "./src/routes/authRoutes";
 import { VercelRequest, VercelResponse } from "@vercel/node";
 
-// `express-session` 타입 확장 (세션에 userId 추가)
-declare module "express-session" {
-  interface SessionData {
-    userId?: number;
-  }
-}
+// // `express-session` 타입 확장 (세션에 userId 추가)
+// declare module "express-session" {
+//   interface SessionData {
+//     userId?: number;
+//   }
+// }
 
 dotenv.config(); // .env 파일 로드
 

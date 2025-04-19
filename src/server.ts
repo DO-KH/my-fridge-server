@@ -24,8 +24,8 @@ app.use(
       "http://localhost:5173",
       "https://my-fridge-alpha.vercel.app"
 
-    ], // ✅ React 개발 서버 주소를 명시적으로 설정
-    credentials: true, // ✅ 인증 정보 포함 (세션 & 쿠키 허용)
+    ], // React 개발 서버 주소를 명시적으로 설정
+    credentials: true, // 인증 정보 포함 (세션 & 쿠키 허용)
   })
 );
 

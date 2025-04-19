@@ -39,7 +39,8 @@ app.use(
     saveUninitialized: false,
     cookie: {
       secure: true, // HTTPS 환경에서는 true로 변경
-      httpOnly: true, // 클라이언트에서 쿠키 접근 방지 (보안 강화)
+      httpOnly: true,
+      sameSite: "none"
     },
   })
 );

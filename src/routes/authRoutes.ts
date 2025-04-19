@@ -54,7 +54,7 @@ router.get("/user", async (req: Request, res: Response): Promise<void> => {
 
   const user = await prisma.user.findUnique({
     where: { id: req.session.userId },
-    select: { id: true, name: true, email: true }, // 비밀번호 제외
+    select: { id: true, name: true, email: true },
   });
 
   if (!user) {

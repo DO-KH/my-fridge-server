@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import itemRoutes from "./routes/itemRoutes";
 import authRoutes from "./routes/authRoutes";
+import { VercelRequest, VercelResponse } from "@vercel/node";
 
 // `express-session` 타입 확장 (세션에 userId 추가)
 declare module "express-session" {
@@ -58,6 +59,9 @@ app.post('/test', (req, res) => {
 });
 
 // 서버 실행
-app.listen(PORT, () => {
-  console.log(`서버 실행중`);
-});
+// app.listen(PORT, () => {
+//   console.log(`서버 실행중`);
+// });
+export default function handler(req: VercelRequest, res: VercelResponse) {
+  app(req as any, res as any);
+}

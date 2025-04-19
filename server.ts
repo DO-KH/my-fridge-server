@@ -59,9 +59,9 @@ app.post('/test', (req, res) => {
 });
 
 // 서버 실행
-// app.listen(PORT, () => {
-//   console.log(`서버 실행중`);
-// });
-export default function handler(req: VercelRequest, res: VercelResponse) {
-  app(req as any, res as any);
-}
+app.listen(PORT, () => {
+  console.log(`서버 실행중`);
+});
+// export default function handler(req: VercelRequest, res: VercelResponse) {
+//   app(req as any, res as any);
+// }

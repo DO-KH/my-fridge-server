@@ -52,6 +52,11 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/items", itemRoutes);
 
+app.post('/test', function (req, res) {
+  let test = req.body.test;
+  res.json({ result: test });
+});
+
 // 서버 실행
 app.listen(PORT, () => {
   console.log(`서버 실행중`);

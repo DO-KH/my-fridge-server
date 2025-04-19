@@ -6,23 +6,29 @@ import { Request, Response } from "express";
 const router = Router();
 
 router.post("/register", async (req: Request, res: Response): Promise<void> => {
-  const { email, password, name } = req.body;
+  try {
+    const { email, password, name } = req.body;
+    if (!email || !password || !name) {
+      res.status(400).json({ error: "입력 누락" });
+      return;
+    }
 
-  // 중복 이메일 확인
-  const existingUser = await prisma.user.findUnique({ where: { email } });
-  if (existingUser) {
-    res.status(400).json({ error: "이미 가입된 이메일입니다." });
-    return;
+    const existingUser = await prisma.user.findUnique({ where: { email } });
+    if (existingUser) {
+      res.status(400).json({ error: "이미 가입된 이메일입니다." });
+      return;
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = await prisma.user.create({
+      data: { email, password: hashedPassword, name },
+    });
+
+    res.json({ success: true, email: newUser.email });
+  } catch (err) {
+    console.error("❌ /register 에러:", err); // 🔥🔥 이거 꼭 넣자
+    res.status(500).json({ error: "서버 오류" });
   }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  // 새 사용자 생성
-  const newUser = await prisma.user.create({
-    data: { email, password: hashedPassword, name },
-  });
-
-  res.json({ success: true, email: newUser.email });
 });
 
 router.post("/login", async (req, res: Response): Promise<void> => {

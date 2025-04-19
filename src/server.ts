@@ -20,7 +20,11 @@ const PORT = process.env.PORT || 5000;
 // ✅ CORS 설정 (특정 Origin 및 인증 정보 허용)
 app.use(
   cors({
-    origin: "http://localhost:5173", // ✅ React 개발 서버 주소를 명시적으로 설정
+    origin: [
+      "http://localhost:5173",
+      "https://my-fridge-alpha.vercel.app"
+
+    ], // ✅ React 개발 서버 주소를 명시적으로 설정
     credentials: true, // ✅ 인증 정보 포함 (세션 & 쿠키 허용)
   })
 );
@@ -52,5 +56,5 @@ app.use("/api/items", itemRoutes);
 
 // ✅ 서버 실행
 app.listen(PORT, () => {
-  console.log(`✅ 서버 실행 중: http://localhost:${PORT}`);
+  console.log(`서버 실행중`);
 });

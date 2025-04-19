@@ -17,6 +17,8 @@ dotenv.config(); // .env 파일 로드
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+app.set("trust proxy", 1); // ✅ secure 쿠키를 위해 반드시 필요
+
 //  CORS 설정 (특정 Origin 및 인증 정보 허용)
 app.use(
   cors({

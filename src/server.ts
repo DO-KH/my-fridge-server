@@ -20,7 +20,7 @@ const PORT = process.env.PORT || 5000;
 //  CORS 설정 (특정 Origin 및 인증 정보 허용)
 app.use(
   cors({
-    origin: "https://my-fridge-alpha.vercel.app", // React 개발 서버 주소를 명시적으로 설정
+    origin: "https://my-fridge-alpha.vercel.app",
     credentials: true, // 인증 정보 포함 (세션 & 쿠키 허용)
   })
 );

@@ -52,7 +52,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/items", itemRoutes);
 
-app.post('/test', function (req, res) {
+app.post('/test', (req, res) => {
   let test = req.body.test;
   res.json({ result: test });
 });

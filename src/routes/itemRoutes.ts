@@ -1,16 +1,9 @@
 import { Router } from "express";
 import { prisma } from "../config/db";
 import { Request, Response } from "express";
-import cors from "cors";
 
 const router = Router();
 
-const corsOptions = {
-  origin: "https://my-fridge-alpha.vercel.app",
-  credentials: true,
-};
-
-router.use(cors(corsOptions));
 
 // 모든 아이템 가져오기
 router.get("/", async (req: Request, res: Response): Promise<void> => {

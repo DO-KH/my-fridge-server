@@ -2,16 +2,8 @@ import { prisma } from "../config/db";
 import bcrypt from "bcrypt"; // 비밀번호 암호화
 import { Router } from "express";
 import { Request, Response } from "express";
-import cors from "cors";
 
 const router = Router();
-
-const corsOptions = {
-  origin: "https://my-fridge-alpha.vercel.app",
-  credentials: true,
-};
-
-router.use(cors(corsOptions));
 
 router.post("/register", async (req: Request, res: Response): Promise<void> => {
   const { email, password, name } = req.body;

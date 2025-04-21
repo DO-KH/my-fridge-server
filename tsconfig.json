@@ -111,9 +111,9 @@
     "skipLibCheck": true,                                 /* Skip type checking all .d.ts files. */
 
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": "./",
     "types": ["node", "express-session"],
     "typeRoots": ["./node_modules/@types", "./types"], 
   },
-  "include": ["src", "types"]
+  "include": ["src", "types", "server.ts"]
 }

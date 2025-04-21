@@ -1,29 +1,29 @@
+import dotenv from "dotenv";
+const envFile = process.env.NODE_ENV === "production" ? ".env" : ".env.development";
+dotenv.config({ path: envFile });
+
 import express from "express";
 import session from "express-session";
 import cors from "cors";
-import dotenv from "dotenv";
 import itemRoutes from "./src/routes/itemRoutes";
 import authRoutes from "./src/routes/authRoutes";
-import { VercelRequest, VercelResponse } from "@vercel/node";
 
-// // `express-session` 타입 확장 (세션에 userId 추가)
-// declare module "express-session" {
-//   interface SessionData {
-//     userId?: number;
-//   }
-// }
-
-dotenv.config(); // .env 파일 로드
+// `express-session` 타입 확장 (세션에 userId 추가)
+declare module "express-session" {
+  interface SessionData {
+    userId?: number;
+  }
+}
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.set("trust proxy", 1); // ✅ secure 쿠키를 위해 반드시 필요
+app.set("trust proxy", 1); 
 
-//  CORS 설정 (특정 Origin 및 인증 정보 허용)
+
 app.use(
   cors({
-    origin: "https://my-fridge-alpha.vercel.app",
+    origin: ["https://my-fridge-alpha.vercel.app", "http://localhost:5173"],
     credentials: true, // 인증 정보 포함 (세션 & 쿠키 허용)
   })
 );
@@ -31,16 +31,16 @@ app.use(
 // JSON 요청 본문을 파싱 (세션보다 먼저!)
 app.use(express.json());
 
-// ✅세션 설정 (express-session)
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "default_secret",
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: true, // HTTPS 환경에서는 true로 변경
+      secure: process.env.NODE_ENV === "production",
       httpOnly: true,
-      sameSite: "none"
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
     },
   })
 );

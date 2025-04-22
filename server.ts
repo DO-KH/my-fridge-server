@@ -1,12 +1,10 @@
-import dotenv from "dotenv";
-const envFile = process.env.NODE_ENV === "production" ? ".env" : ".env.development";
-dotenv.config({ path: envFile });
-
+import "./src/config/env";
 import express from "express";
-import session from "express-session";
+const session = require("express-session");
 import cors from "cors";
 import itemRoutes from "./src/routes/itemRoutes";
 import authRoutes from "./src/routes/authRoutes";
+import { sessionStore } from "./src/config/sessionStore";
 
 // `express-session` 타입 확장 (세션에 userId 추가)
 declare module "express-session" {
@@ -18,8 +16,7 @@ declare module "express-session" {
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.set("trust proxy", 1); 
-
+app.set("trust proxy", 1);
 
 app.use(
   cors({
@@ -27,21 +24,19 @@ app.use(
     credentials: true, // 인증 정보 포함 (세션 & 쿠키 허용)
   })
 );
-
-// JSON 요청 본문을 파싱 (세션보다 먼저!)
 app.use(express.json());
-
 
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "default_secret",
     resave: false,
     saveUninitialized: false,
+    store: sessionStore,
     cookie: {
       secure: process.env.NODE_ENV === "production",
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24, // 1일
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     },
   })
 );
@@ -55,7 +50,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/items", itemRoutes);
 
-app.post('/test', (req, res) => {
+app.post("/test", (req, res) => {
   let test = req.body.test;
   res.json({ result: test });
 });

@@ -1,4 +1,4 @@
-import { prisma } from "../config/db";
+import { prisma } from "../config/prisma";
 import bcrypt from "bcrypt"; // 비밀번호 암호화
 import { Router } from "express";
 import { Request, Response } from "express";

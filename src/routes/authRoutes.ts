@@ -54,7 +54,7 @@ router.post("/login", async (req, res: Response): Promise<void> => {
 
 router.get("/user", async (req: Request, res: Response): Promise<void> => {
 
-  console.log("💡 session check:", req.session); // 추가
+  console.log("session check:", req.session); // 추가
   if (!req.session.userId) {
     res.status(401).json({ error: "로그인이 필요합니다." });
     return;
@@ -66,6 +66,7 @@ router.get("/user", async (req: Request, res: Response): Promise<void> => {
   });
 
   if (!user) {
+    req.session.destroy(() => {});
     res.status(401).json({ error: "유저를 찾을 수 없습니다." });
     return;
   }

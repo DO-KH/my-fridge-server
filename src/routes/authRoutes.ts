@@ -49,7 +49,7 @@ router.post("/login", async (req, res: Response): Promise<void> => {
 
   req.session.userId = user.id;
   
-  res.json({ success: true, email: user.email });
+  res.json({ success: true, email: user.name });
 });
 
 router.get("/user", async (req: Request, res: Response): Promise<void> => {

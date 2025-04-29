@@ -4,7 +4,6 @@ import { Request, Response } from "express";
 
 const router = Router();
 
-
 // 모든 아이템 가져오기
 router.get("/", async (req: Request, res: Response): Promise<void> => {
   try {
@@ -17,7 +16,7 @@ router.get("/", async (req: Request, res: Response): Promise<void> => {
     const items = await prisma.item.findMany({
       where: { username: String(username) },
     });
-    
+
     res.json(items);
   } catch (error) {
     console.error("데이터 불러오기 오류:", error);
@@ -25,10 +24,11 @@ router.get("/", async (req: Request, res: Response): Promise<void> => {
   }
 });
 
-// ✅ 아이템 추가
+// 아이템 추가
 router.post("/", async (req: Request, res: Response): Promise<void> => {
   try {
-    const { username, name, quantity, expiryDate, receivingDate, category } = req.body;
+    const { username, name, quantity, expiryDate, receivingDate, category } =
+      req.body;
 
     if (!username || !name || !quantity || !receivingDate || !category) {
       res.status(400).json({ error: "필수 데이터가 누락되었습니다." });
@@ -46,7 +46,7 @@ router.post("/", async (req: Request, res: Response): Promise<void> => {
   }
 });
 
-// ✅ 아이템 삭제
+// 아이템 삭제
 router.delete("/:id", async (req: Request, res: Response): Promise<void> => {
   try {
     const id = Number(req.params.id);
@@ -57,7 +57,7 @@ router.delete("/:id", async (req: Request, res: Response): Promise<void> => {
   }
 });
 
-// ✅ 아이템 수량 업데이트
+// 아이템 수량 업데이트
 router.patch("/:id", async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
@@ -81,27 +81,68 @@ router.patch("/:id", async (req: Request, res: Response): Promise<void> => {
 });
 
 // 유통기한 임박 아이템 조회
-router.get("/expiring-soon", async (req: Request, res: Response): Promise<void> => {
-  try {
-    const today = new Date();
-    const threeDaysLater = new Date();
-    threeDaysLater.setDate(today.getDate() + 3)
+router.get(
+  "/expiring-soon",
+  async (req: Request, res: Response): Promise<void> => {
+    try {
+      const today = new Date();
+      const threeDaysLater = new Date();
+      threeDaysLater.setDate(today.getDate() + 3);
 
-    // 유통기한이 오늘 ~ 3일 이내인 아이템 조회
-    const expiringItems = await prisma.item.findMany({
-      where: {
-        expiryDate: {
-          gte: today.toISOString(),
-          lte: threeDaysLater.toISOString(),
-        }
-      }
+      // 유통기한이 오늘 ~ 3일 이내인 아이템 조회
+      const expiringItems = await prisma.item.findMany({
+        where: {
+          expiryDate: {
+            gte: today.toISOString(),
+            lte: threeDaysLater.toISOString(),
+          },
+        },
+      });
+      res.json(expiringItems);
+    } catch (err) {
+      res.status(500).json({ err: "유통기한 임박 식품 조회 실패" });
+    }
+  }
+);
+
+// 데이터 이관
+router.post("/bulk", async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email, username, items } = req.body;
+
+    if (!username || !Array.isArray(items)) {
+      res.status(400).json({ message: "잘못된 요청 형식입니다." });
+      return;
+    }
+
+    // 유저 확인
+    const user = await prisma.user.findUnique({
+      where: { email },
     });
-    res.json(expiringItems);
+
+    if (!user) {
+      res.status(404).json({message: "사용자를 찾을 수 없습니다."})
+      return;
+    }
+
+    // DB에 bulk insert
+    await prisma.item.createMany({
+      data: items.map((item) => ({
+        username,
+        name: item.name,
+        quantity: item.quantity,
+        expiryDate: item.expiryDate ?? null,
+        receivingDate: item.receivingDate,
+        category: item.category,
+      })),
+    });
+
+    res.status(200).json({ message: "데이터 이관 성공" });
+
   } catch (err) {
-    res.status(500).json({err: "유통기한 임박 식품 조회 실패"})
+    console.error("Bulk 등록 에러:", err);
+    res.status(500).json({ message: "서버 에러" });
   }
 });
 
-
 export default router;
-
